@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+    }
+
+    p {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Medical Chatbot</h1>
+
+  <form id="chatForm">
+    <input type="text" id="userInput" placeholder="Enter your symptoms or questions" />
+    <button type="submit">Send</button>
+  </form>
+
+  <div id="responseContainer">
+    <p><strong>Response:</strong></p>
+    <p id="responseText"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('chatForm');
+    const inputField = document.getElementById('userInput');
+    const responseContainer = document.getElementById('responseContainer');
+    const responseText = document.getElementById('responseText');
+
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const userInput = inputField.value;
+
+      if (!userInput) {
+        alert("Please enter a question or symptom.");
+        return;
+      }
+
+      // Disable the button to prevent multiple submissions
+      form.querySelector('button').disabled = true;
+
+      try {
+        // Replace `https://your-backend-url.render.com` with your actual Render backend URL
+        const res = await fetch('https://your-backend-url.render.com/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ input_text: userInput }),
+        });
+
+        const data = await res.json();
+        // Show the response from the backend
+        responseText.textContent = data.response || 'No response from server.';
+      } catch (error) {
+        responseText.textContent = 'Sorry, there was an error processing your request.';
+        console.error('Error:', error);
+      } finally {
+        // Re-enable the button
+        form.querySelector('button').disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
